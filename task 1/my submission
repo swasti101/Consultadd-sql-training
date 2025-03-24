@@ -1,0 +1,33 @@
+sql query to create labeled sample data from unlabeled image predictions table.
+sampling strategy is to order in decreasing order of scores and sample every third data starting with the first untlil
+      we find the first 10,000 positive samples and similarly starting from end and taking every third negative sample
+      until we find 10,000 negative samples also.
+
+
+OPTIMISED SQL QUERY : 
+WITH ranked_images AS (
+ SELECT image_id, score,
+ ROW_NUMBER() OVER (ORDER BY score DESC) AS row_num_desc,
+ ROW_NUMBER() OVER (ORDER BY score ASC) AS row_num_asc
+ FROM unlabeled_images
+)
+, positive_samples AS (
+ SELECT image_id, 1 AS weak_label
+ FROM ranked_images
+ WHERE row_num_desc % 3 = 1
+ LIMIT 20
+)
+, negative_samples AS (
+ SELECT image_id, 0 AS weak_label
+ FROM ranked_images
+ WHERE row_num_asc % 3 = 1
+ LIMIT 20
+)
+
+SELECT image_id, weak_label
+FROM (
+ SELECT * FROM positive_samples
+ UNION ALL
+ SELECT * FROM negative_samples
+) AS combined_samples
+ORDER BY image_id;
