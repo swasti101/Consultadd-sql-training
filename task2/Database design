@@ -9,6 +9,61 @@ ENTITIES AND THEIR DESCRIPTION:
 6. Followers: This table will store the association between users and artists. It will have two foreign keys, linking to the Users and Artists tables.
 7. Likes: This table will store information about the tracks liked by the users. It will have two foreign keys, linking to the Users and Tracks tables.
 
+Schema of the database:
+CREATE TABLE Users (
+  User_ID INT AUTO_INCREMENT PRIMARY KEY,
+  Name VARCHAR(50) NOT NULL,
+  Email VARCHAR(50) NOT NULL UNIQUE,
+  Password VARCHAR(100) NOT NULL,
+  Date_of_Birth DATE
+);
+
+CREATE TABLE Artists (
+  Artist_ID INT AUTO_INCREMENT PRIMARY KEY,
+  Name VARCHAR(50) NOT NULL,
+  Genre VARCHAR(50)
+);
+
+CREATE TABLE Albums (
+  Album_ID INT AUTO_INCREMENT PRIMARY KEY,
+  Artist_ID INT,
+  Name VARCHAR(50) NOT NULL,
+  Release_Date DATE,
+  Image VARCHAR(255),
+  FOREIGN KEY (Artist_ID) REFERENCES Artists(Artist_ID)
+);
+
+CREATE TABLE Songs (
+  Song_ID INT AUTO_INCREMENT PRIMARY KEY,
+  Album_ID INT,
+  Name VARCHAR(50) NOT NULL,
+  Duration INT NOT NULL,
+  FOREIGN KEY (Album_ID) REFERENCES Albums(Album_ID)
+);
+
+CREATE TABLE Playlists (
+  Playlist_ID INT AUTO_INCREMENT PRIMARY KEY,
+  User_ID INT,
+  Name VARCHAR(50) NOT NULL,
+  FOREIGN KEY (User_ID) REFERENCES Users(User_ID)
+);
+
+CREATE TABLE Followers (
+  User_ID INT,
+  Artist_ID INT,
+  PRIMARY KEY (User_ID, Artist_ID),
+  FOREIGN KEY (User_ID) REFERENCES Users(User_ID),
+  FOREIGN KEY (Artist_ID) REFERENCES Artists(Artist_ID)
+);
+
+CREATE TABLE Likes (
+  User_ID INT,
+  Song_ID INT,
+  PRIMARY KEY (User_ID, Song_ID),
+  FOREIGN KEY (User_ID) REFERENCES Users(User_ID),
+  FOREIGN KEY (Song_ID) REFERENCES Songs(Song_ID)
+);
+
 
 RELATIONSHIPS BETWEEN ENTITIES:
 -> One-to-Many relationship between Users and Playlists: One user can create multiple playlists.
@@ -17,3 +72,18 @@ RELATIONSHIPS BETWEEN ENTITIES:
 -> Many-to-Many relationship between Playlists and Tracks: One playlist can have multiple tracks, and one track can be part of multiple playlists.To manage this relationship, we can create another table called playlist_tracks because this is a many to many relationship.
 -> Many-to-Many relationship between Users and Artists: One user can follow multiple artists, and one artist can be followed by multiple users. The relationship is managed by the Followers table.
 -> Many-to-Many relationship between Users and Tracks: One user can like multiple tracks, and one track can be liked by multiple users. The relationship is managed by the Likes table.
+
+
+Some queries to test the schema design:
+Query 1 : Retrieve the name of a user and all artists they are following:
+  query : SELECT User.Name AS User_Name, Artist.Name AS Artist_Name
+          FROM User
+          JOIN Follower ON User.User_ID = Follower.User_ID
+          JOIN Artist ON Follower.Artist_ID = Artist.Artist_ID;
+
+Query 2 : Retrieve the name of a user and all tracks they have liked:
+  query : SELECT User.Name AS User_Name, Track.Name AS Track_Name
+          FROM User
+          JOIN Like ON User.User_ID = Like.User_ID
+          JOIN Track ON Like.Track_ID = Track.Track_ID;
+
