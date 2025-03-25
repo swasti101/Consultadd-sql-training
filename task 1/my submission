@@ -5,22 +5,20 @@ sampling strategy is to order in decreasing order of scores and sample every thi
 
 
 OPTIMISED SQL QUERY : 
-WITH ranked_images AS (
- SELECT image_id, score,
- ROW_NUMBER() OVER (ORDER BY score DESC) AS row_num_desc,
- ROW_NUMBER() OVER (ORDER BY score ASC) AS row_num_asc
- FROM unlabeled_images
-)
-, positive_samples AS (
- SELECT image_id, 1 AS weak_label
- FROM ranked_images
- WHERE row_num_desc % 3 = 1
+WITH score_rank AS (
+ SELECT image_id, score, IF(score >= 0.5, 0, 1) as weak_label
+ FROM unlabeled_image_predictions
+);
+WITH positive_samples AS (
+ SELECT image_id, weak_label, row_number(OVER ORDER BY score DESC) as r_num
+ FROM score_rank
+ WHERE r_num % 3 = 1 AND weak_label = 0
  LIMIT 20
 )
-, negative_samples AS (
- SELECT image_id, 0 AS weak_label
- FROM ranked_images
- WHERE row_num_asc % 3 = 1
+WITH negative_samples AS (
+ SELECT image_id, weak_label, row_number(OVER ORDER BY score ASC) as r_num
+ FROM score_rank
+ WHERE r_num % 3 = 1 and weak_label = 1
  LIMIT 20
 )
 
