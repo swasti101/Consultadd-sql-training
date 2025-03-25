@@ -75,15 +75,16 @@ RELATIONSHIPS BETWEEN ENTITIES:
 
 
 Some queries to test the schema design:
-Query 1 : Retrieve the name of a user and all artists they are following:
+Query 1 : Retrieve the name of a user and all tracks they have liked:
+  query : SELECT User.Name AS User_Name, Track.Name AS Track_Name
+          FROM User
+          JOIN Like ON User.User_ID = Like.User_ID
+          JOIN Track ON Like.Track_ID = Track.Track_ID;
+
+Query 2: Retrieve the name of a user and all artists they are following:
   query : SELECT User.Name AS User_Name, Artist.Name AS Artist_Name
           FROM User
           JOIN Follower ON User.User_ID = Follower.User_ID
           JOIN Artist ON Follower.Artist_ID = Artist.Artist_ID;
 
-Query 2 : Retrieve the name of a user and all tracks they have liked:
-  query : SELECT User.Name AS User_Name, Track.Name AS Track_Name
-          FROM User
-          JOIN Like ON User.User_ID = Like.User_ID
-          JOIN Track ON Like.Track_ID = Track.Track_ID;
 
