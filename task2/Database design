@@ -1,1 +1,19 @@
+Database design for a music streaming platform :
 
+ENTITIES AND THEIR DESCRIPTION: 
+1. Users : This table will store information about the registered users of the system, such as their name, email, password, date of birth.
+2. Artists : This table will store information about the artists, such as their names, genre, and image.
+3. Albums : This table will store information about the albums, such as the album name, release date. It will also have a foreign key linking to the Artists table.
+4. Songs : This table will store information about the tracks, such as the track name, duration. It will also have a foreign key linking to the album table.
+5. Playlists : This table will store information about the playlists created by the users, such as the playlist name. It will also have a foreign key linking to the Users table.
+6. Followers: This table will store the association between users and artists. It will have two foreign keys, linking to the Users and Artists tables.
+7. Likes: This table will store information about the tracks liked by the users. It will have two foreign keys, linking to the Users and Tracks tables.
+
+
+RELATIONSHIPS BETWEEN ENTITIES:
+-> One-to-Many relationship between Users and Playlists: One user can create multiple playlists.
+-> One-to-Many relationship between Artists and Albums: One artist can have multiple albums.
+-> One-to-Many relationship between Albums and Tracks: One album can have multiple tracks.
+-> Many-to-Many relationship between Playlists and Tracks: One playlist can have multiple tracks, and one track can be part of multiple playlists.To manage this relationship, we can create another table called playlist_tracks because this is a many to many relationship.
+-> Many-to-Many relationship between Users and Artists: One user can follow multiple artists, and one artist can be followed by multiple users. The relationship is managed by the Followers table.
+-> Many-to-Many relationship between Users and Tracks: One user can like multiple tracks, and one track can be liked by multiple users. The relationship is managed by the Likes table.
