@@ -1,0 +1,46 @@
+Query to create the Temp_BestQuality table:
+
+CREATE TABLE Temp_BestQuality AS
+SELECT 
+    ai.account_id,
+    i.type, 
+    MAX(
+        CASE 
+            WHEN ai.quality = 'common' THEN 1
+            WHEN ai.quality = 'rare' THEN 2
+            WHEN ai.quality = 'epic' THEN 3
+        END
+    ) AS max_quality
+FROM account_items ai
+JOIN items i ON ai.item_id = i.id
+GROUP BY ai.account_id, i.type
+order by ai.account_id, i.type;
+
+
+
+
+Query to find the final output:
+
+SELECT 
+    a.username,
+    i.type,
+    CASE 
+        WHEN bq.max_quality = 3 THEN 'epic'
+        WHEN bq.max_quality = 2 THEN 'rare'
+        ELSE 'common'
+    END AS advised_quality,
+    GROUP_CONCAT(i.name ORDER BY i.name SEPARATOR ', ') AS advised_name
+FROM account_items ai
+JOIN items i ON ai.item_id = i.id
+JOIN accounts a ON ai.account_id = a.id
+JOIN Temp_BestQuality bq 
+    ON ai.account_id = bq.account_id 
+    AND i.type = bq.type 
+    AND (CASE 
+            WHEN ai.quality = 'common' THEN 1
+            WHEN ai.quality = 'rare' THEN 2
+            WHEN ai.quality = 'epic' THEN 3
+        END) = bq.max_quality
+GROUP BY a.username, i.type, bq.max_quality
+ORDER BY a.username, i.type;
+
