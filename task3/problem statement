@@ -1,1 +1,10 @@
+PROBLEM STATEMENT : 
+An MMORPG game is under development. For the profile and inventory mechanics, it needs a query that advises the best quality items available in the inventory.
+Item quality is represented by three ranks (from lowest to highest): "common", "rare", and "epic".
+The result should have the following columns: username / type / advised_quality / advised _name.
+username - account username
+type - item type
+advised_quality - advised item quality ("common", "rare" or "epic")
+advised_name - list of advised items records.
 
+GIVEN TABLES ACCOUNTS, ITEMS AND ACCOUNT_ITEMS, THE OUTPUT SHOULL BE : FOR EVERY USER, TELL THE BEST QUALITY AVAILABLE ITEM FOR ALL THE TYPES OF TYPES HE HAS.
