@@ -1,0 +1,10 @@
+My Approach: 
+-> first create a temp result table which contains the user id, item id, and best available item quality. 
+   To find best quality, i first mapped the common, rare, and epic to {1, 2, 3} and then used group by command for user and item id.
+    Lets call this table Temp_BestQuality.
+
+-> Then I used this temp_BestQuality table to find the final output. I went through the account items table again to find all the items for a user and item which has quality same as
+   the best available quality, and then using GROUP_CONCAT command , made a list of all these items.
+
+-> The queries to create the Temp_BestQuality and final output is given in the queries file along with the basic schemas of accounts, items and account_items tables.
+    
