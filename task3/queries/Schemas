@@ -1,0 +1,24 @@
+->   Accounts Schema : 
+       CREATE TABLE accounts(
+        id INT PRIMARY KEY,
+        username VARCHAR(255)
+      );
+
+->   Items Schema :
+      CREATE TABLE items(
+        id INT PRIMARY KEY,
+        type VARCHAR(255),
+        name VARCHAR(255)
+      );
+
+->  Account_items : 
+        CREATE TABLE account_items(
+          account_id INT,
+          item_id INT,
+          quality ENUM('common', 'rare', 'epic') NOT NULL,
+          FOREIGN KEY (account_id) REFERENCES accounts(id) ON DELETE CASCADE,
+          FOREIGN KEY (item_id) REFERENCES items(id) ON DELETE CASCADE
+        );
+
+    
+
